@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package example;
+
+import "proto/retag/retag.proto";
+
+option go_package = "github.com/pubgo/protoc-gen-retag/example;example";
+
+message Example {
+    string with_new_tags = 1 [
+        (retag.tags) = {name: "graphql",value: "withNewTags,optional"}
+    ];
+
+    string with_new_multiple = 2 [
+        (retag.tags) = {name: "graphql",value: "withNewTags,optional"},
+        (retag.tags) = {name: "xml",value: "multi,omitempty"}
+    ];
+
+    string replace_default = 3 [
+        (retag.tags) = {name: "json",value: "replacePrevious111"}
+    ];
+
+    oneof one_of {
+        option (retag.oneof_tags) = {name: "graphql",value: "withNewTags,optional"};
+        string a = 5 [(retag.tags) = {name: "json",value: "A111"}];
+        int32 b_jk = 6 [(retag.tags) = {name: "json",value: "b_Jk1111"}];
+    }
+
+    optional string ID = 4;
+
+    SecondMessage mm = 7;
+    optional SecondMessage mm2 = 8;
+}
+
+message SecondMessage {
+    string with_new_tags = 1 [(retag.tags) = {name: "graphql",value: "withNewTags,optional"}];
+    string with_new_multiple = 2 [
+        (retag.tags) = {name: "graphql",value: "withNewTags,optional"},
+        (retag.tags) = {name: "xml",value: "multi,omitempty"}
+    ];
+
+    string replace_default = 3 [(retag.tags) = {name: "json",value: "replacePrevious1111"}];
+}
+
+message ThirdExample {
+    message InnerExample {
+        string id = 1 [
+            (retag.tags) = {name: "json",value: "yes111"},
+            (retag.tags) = {name: "json",value: "yes222"}
+        ];
+        int32 yes = 2 [(retag.tags) = {name: "json",value: "id111"}];
+    }
+
+    InnerExample inner_example = 1 [
+        (retag.tags) = {name: "json",value: "inner1111"}
+    ];
+}
