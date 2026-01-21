@@ -4,7 +4,7 @@ package example;
 
 import "proto/retag/retag.proto";
 
-option go_package = "github.com/pubgo/protoc-gen-retag/example;example";
+option go_package = "github.com/pubgo/protoc-gen-retag/pkg/example;example";
 
 message Example {
     string with_new_tags = 1 [

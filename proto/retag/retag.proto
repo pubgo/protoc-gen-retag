@@ -3,8 +3,7 @@ syntax = "proto3";
 package retag;
 
 import "google/protobuf/descriptor.proto";
-
-option go_package = "github.com/pubgo/protoc-gen-retag/retag;retagpb";
+option go_package = "github.com/pubgo/protoc-gen-retag/pkg/retag;retagpb";
 
 message Tag {
   string name = 1;

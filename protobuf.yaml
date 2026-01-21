@@ -1,17 +1,19 @@
-checksum: ae1e52134aaa1770db37e83bf3cea605874942cb
+checksum: 96c8819aedc1fc345d2436eb54f47fa4efe430bc
 vendor: .proto
 base:
   out: ./pkg
   paths: import
-  module: github.com/pubgo/protoc-gen-retag
+  module: github.com/pubgo/protoc-gen-retag/pkg
 root:
-  - example
   - proto
 includes:
   - proto
 deps:
   - name: google/protobuf
     url: /usr/local/include/google/protobuf
+    optional: true
+  - name: google/protobuf
+    url: /opt/homebrew/include/google/protobuf
+    optional: true
 plugins:
   - name: go
-  - name: retag
