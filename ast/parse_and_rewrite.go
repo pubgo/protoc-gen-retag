@@ -5,17 +5,13 @@
 package ast
 
 import (
-	"flag"
-
-	retagpb "github.com/pubgo/protoc-gen-retag/retag"
+	retagpb "github.com/pubgo/protoc-gen-retag/pkg/retag"
 	"github.com/searKing/golang/go/reflect"
 	strings_ "github.com/searKing/golang/go/strings"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
 )
-
-var OutputPkg = flag.String("__out", "", "output pkg")
 
 type FieldInfo struct {
 	FieldNameInProto string

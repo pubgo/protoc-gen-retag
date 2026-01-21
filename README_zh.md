@@ -4,32 +4,32 @@
 [![CI](https://github.com/pubgo/protoc-gen-retag/actions/workflows/ci.yml/badge.svg)](https://github.com/pubgo/protoc-gen-retag/actions/workflows/ci.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/pubgo/protoc-gen-retag)](https://goreportcard.com/report/github.com/pubgo/protoc-gen-retag)
 
-[中文文档](README_zh.md)
+[English](README.md)
 
-A protoc plugin that allows you to add custom Go struct tags to generated protobuf files.
+一个 protoc 插件，用于在生成的 protobuf Go 文件中添加自定义 struct tags。
 
-## Features
+## 功能特性
 
-- Add custom struct tags (e.g., `graphql`, `xml`, `validate`) to protobuf-generated Go structs
-- Modify existing tags (e.g., override default `json` tag)
-- Support for `oneof` fields
-- Preserves original protobuf/json tags while adding new ones
+- 为 protobuf 生成的 Go 结构体添加自定义 struct tags（如 `graphql`、`xml`、`validate` 等）
+- 修改已有的 tags（如覆盖默认的 `json` tag）
+- 支持 `oneof` 字段
+- 保留原有的 protobuf/json tags，同时添加新的 tags
 
-## Installation
+## 安装
 
 ```bash
 go install github.com/pubgo/protoc-gen-retag@latest
 ```
 
-## Usage
+## 使用方法
 
-### 1. Import the retag proto file
+### 1. 导入 retag proto 文件
 
 ```proto
 import "proto/retag/retag.proto";
 ```
 
-### 2. Add custom tags to your fields
+### 2. 为字段添加自定义 tags
 
 ```proto
 syntax = "proto3";
@@ -39,23 +39,23 @@ package example;
 import "proto/retag/retag.proto";
 
 message User {
-    // Add a new graphql tag
+    // 添加新的 graphql tag
     string name = 1 [
         (retag.tags) = {name: "graphql", value: "userName,optional"}
     ];
 
-    // Add multiple custom tags
+    // 添加多个自定义 tags
     string email = 2 [
         (retag.tags) = {name: "graphql", value: "userEmail"},
         (retag.tags) = {name: "validate", value: "required,email"}
     ];
 
-    // Override the default json tag
+    // 覆盖默认的 json tag
     string user_id = 3 [
         (retag.tags) = {name: "json", value: "id,omitempty"}
     ];
 
-    // Support for oneof fields
+    // 支持 oneof 字段
     oneof contact {
         option (retag.oneof_tags) = {name: "graphql", value: "contact,optional"};
         string phone = 4;
@@ -64,13 +64,13 @@ message User {
 }
 ```
 
-### 3. Generate Go code
+### 3. 生成 Go 代码
 
 ```bash
 protoc --go_out=. --retag_out=. your.proto
 ```
 
-Or with buf:
+或者使用 buf：
 
 ```yaml
 # buf.gen.yaml
@@ -84,9 +84,9 @@ plugins:
     opt: paths=source_relative
 ```
 
-## Generated Output
+## 生成结果
 
-The generated Go struct will include your custom tags:
+生成的 Go 结构体将包含你的自定义 tags：
 
 ```go
 type User struct {
@@ -97,17 +97,17 @@ type User struct {
 }
 ```
 
-## Tag Options
+## Tag 选项
 
-| Extension | Scope | Description |
-|-----------|-------|-------------|
-| `retag.tags` | Field | Add/modify tags on message fields |
-| `retag.oneof_tags` | Oneof | Add tags on oneof fields |
+| 扩展 | 作用域 | 描述 |
+|-----|-------|------|
+| `retag.tags` | 字段 | 在 message 字段上添加/修改 tags |
+| `retag.oneof_tags` | Oneof | 在 oneof 字段上添加 tags |
 
-## Credits
+## 致谢
 
-This project is inspired by and based on [protoc-gen-go-tag](https://github.com/searKing/golang/tree/master/tools/protoc-gen-go-tag).
+本项目的灵感来源于 [protoc-gen-go-tag](https://github.com/searKing/golang/tree/master/tools/protoc-gen-go-tag)。
 
-## License
+## 许可证
 
 MIT License

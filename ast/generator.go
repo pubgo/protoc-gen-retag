@@ -18,8 +18,6 @@ import (
 	"google.golang.org/protobuf/types/pluginpb"
 )
 
-var fileSet = token.NewFileSet()
-
 type Generator struct {
 	// Ast goFiles to which this package contains.
 	goFiles []GoFile
@@ -28,12 +26,16 @@ type Generator struct {
 	protoFiles []FileInfo
 
 	protoGenerator *protogen.Plugin
+
+	// fset provides position information for parsing Go files
+	fset *token.FileSet
 }
 
 func NewGenerator(protoFiles []FileInfo, protoGenerator *protogen.Plugin) *Generator {
 	return &Generator{
 		protoFiles:     protoFiles,
 		protoGenerator: protoGenerator,
+		fset:           token.NewFileSet(),
 	}
 }
 
@@ -45,7 +47,7 @@ func (g *Generator) ParseGoContent(outerFile *pluginpb.CodeGeneratorResponse_Fil
 	}
 	const mode = parser.AllErrors | parser.ParseComments
 
-	f, err := parser.ParseFile(fileSet, "", outerFile.GetContent(), mode)
+	f, err := parser.ParseFile(g.fset, "", outerFile.GetContent(), mode)
 	if err != nil {
 		g.protoGenerator.Error(fmt.Errorf("failed to parse struct tag in field extension: %w", err))
 		return
@@ -58,7 +60,7 @@ func (g *Generator) addGoFile(astFile *ast.File, outerFile *pluginpb.CodeGenerat
 	g.goFiles = append(g.goFiles, GoFile{
 		goGenerator: g,
 		astFile:     astFile,
-		fset:        fileSet,
+		fset:        g.fset,
 		protoFiles:  g.protoFiles,
 		outerFile:   outerFile,
 	})

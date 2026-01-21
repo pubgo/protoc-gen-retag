@@ -1,0 +1,83 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  VERSION:
+    sh: cat .version/VERSION 2>/dev/null || echo "dev"
+  COMMIT:
+    sh: git rev-parse --short HEAD 2>/dev/null || echo "none"
+  DATE:
+    sh: date -u '+%Y-%m-%dT%H:%M:%SZ'
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  install:
+    desc: Install the binary
+    cmds:
+      - go install -ldflags "-s -w -X main.version={{.VERSION}} -X main.commit={{.COMMIT}} -X main.date={{.DATE}}" .
+
+  build:
+    desc: Build the binary
+    cmds:
+      - go build -ldflags "-s -w -X main.version={{.VERSION}} -X main.commit={{.COMMIT}} -X main.date={{.DATE}}" -o protoc-gen-retag .
+
+  vet:
+    desc: Run go vet and gofumpt
+    cmds:
+      - go vet ./...
+      - gofumpt -l -w -extra .
+
+  fmt:
+    desc: Format code
+    cmds:
+      - gofumpt -l -w -extra .
+
+  lint:
+    desc: Run golangci-lint
+    cmds:
+      - golangci-lint run --verbose ./...
+
+  test:
+    desc: Run tests
+    cmds:
+      - go test -v ./...
+
+  generate:
+    desc: Run go generate
+    cmds:
+      - go generate ./...
+
+  protobuf:
+    desc: Generate protobuf files
+    cmds:
+      - protobuild vendor
+      - protobuild gen
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -f protoc-gen-retag
+      - go clean
+
+  version:
+    desc: Show version info
+    cmds:
+      - echo "Version {{.VERSION}} (commit {{.COMMIT}}, built at {{.DATE}})"
+
+  release:
+    desc: Create a release build with goreleaser
+    cmds:
+      - goreleaser release --snapshot --clean
+
+  ci:
+    desc: Run all CI checks
+    cmds:
+      - task: vet
+      - task: lint
+      - task: test
+      - task: build
